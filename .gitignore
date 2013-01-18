@@ -1,0 +1,12 @@
+db
+venv
+cache
+*.pyo
+*.pyc
+uploads
+assets/.sass-cache
+assets.old
+app/isthisdst/local_settings.py
+app/isthisdst/local_settings_*.py
+fabfile_local.py
+static

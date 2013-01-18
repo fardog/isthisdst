@@ -1,0 +1,17 @@
+/* the humans responsible & colophon */
+/* humanstxt.org */
+
+
+/* TEAM */
+  Developer: Nathan Wittstock of Far Dog LLC
+  Site: http://fardogllc.com/
+  Twitter: @milkandtang
+  Location: Portland, OR
+
+/* THANKS */
+  NORTH (http://north.com)
+
+/* SITE */
+  Standards: HTML5, CSS3
+  Components: Python, Django, Zurb Foundation, Modernizr, jQuery
+  Software: Sublime Text 2, git

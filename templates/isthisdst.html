@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load tz %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="row">
+	<div class="six columns">
+		<h1>Is this daylight saving time?</h1>
+		
+	{% if failure_message %}
+		<h2 class="dunno">Dunno.</h2>
+	{% elif not dst %}
+		<h2 class="no">No.</h2>
+	{% elif dst %}
+		<h2 class="yes">Yes.</h2>
+	{% endif %}
+
+	{% if location %}
+		{% if observes and dst %}<h3>You are currently observing DST.</h3>
+		{% elif observes and not dst %}<h3>You&rsquo;re in &ldquo;real&rdquo; time, for now.</h3>
+		{% elif not observes %}<h3>&hellip;and it never will be.</h3>{% endif %}
+		<p>We&rsquo;ve placed you in {% if location.city or location.region or location.country_name %}<em>{% if location.city %}{{ location.city }}{% endif %}{% if location.city and location.region %}, {% endif %}{% if location.region %}{{ location.region }}{% endif %}{% if location.region and location.country_name %}, {% endif %}{% if location.country_name %}{{ location.country_name}}{% endif %}</em>, which is in{% endif %} the {% if timezone %}<em>{{ timezone }}</em> timezone, a location that <strong>{% if observes %}observes{% else %}doesn&rsquo;t observe{% endif %}</strong> Daylight Saving Time. {% if next_transition %}Your next transition is <em>{% localtime off %}{{ next_transition }}</em>, when you will {%if offset_neg %}subtract{% else %}add{% endif %} <em>{% if offset_min %}{{ offset_min|apnumber }} minute{{ offset_min|pluralize }}{% elif offset_hr %}{{ offset_hr|apnumber }} hour{{ offset_hr|pluralize }}{% endif %}</em> {% if offset_neg %}from{% else %}to{% endif %} your local time.{% endlocaltime %}{% endif %}{% endif %}</p>
+	{% endif %}
+
+	{% if failure_message %}
+		<p class="error">{{ failure_message }}</p>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}
