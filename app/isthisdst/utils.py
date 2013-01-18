@@ -3,6 +3,7 @@ from geolocation.models import TimezoneCache
 from datetime import datetime, timedelta
 from pytz import timezone
 import pytz
+from django.conf import settings
 
 
 def get_tzdata(lat, lng):
@@ -21,7 +22,7 @@ def get_tzdata(lat, lng):
         TimezoneCache.objects.filter(latitude=round(float(lat), 1), longitude=round(float(lng), 1)).delete()
 
     if not tzdata:
-        tzdata = GeoNames(username="fardog").timezone(lat, lng)
+        tzdata = GeoNames(username=settings.GEONAMES_USER).timezone(lat, lng)
         t = TimezoneCache(latitude=round(float(lat), 1), longitude=round(float(lng), 1),
                           timezoneId=tzdata['timezoneId'], rawOffset=float(tzdata['rawOffset']),
                           expires=datetime.utcnow() + timedelta(weeks=2), )

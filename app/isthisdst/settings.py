@@ -192,5 +192,6 @@ PIPELINE_JS = {
 GEOIP_PATH = ''  # full path to geoip database
 GEOIP_CITY = 'GeoLiteCity.dat'  # filename of city database
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+GEONAMES_USER = 'your_username'
 
 from local_settings import *
