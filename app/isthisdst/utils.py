@@ -47,20 +47,20 @@ def calculate_dst_dates(tz, localtime=datetime.utcnow()):
     originally_dst = dt.dst()
 
     for days in range(MAX_TZ_SEARCH_DAYS):
-        d = tz.normalize(
+        dt = tz.normalize(
             dt + timedelta(days = days)
         )
-        if originally_dst and not d.dst():
+        if originally_dst and not dt.dst():
             response.update({
-                'next': d,
-                'next_abbrev': d.tzname()
+                'next': dt,
+                'next_abbrev': dt.tzname()
             })
             return response
-        elif not originally_dst and d.dst():
+        elif not originally_dst and dt.dst():
             response.update({
-                'next': d,
-                'next_abbrev': d.tzname(),
-                'offset': d.dst()  # We were not in DST originally, so offset was 0
+                'next': dt,
+                'next_abbrev': dt.tzname(),
+                'offset': dt.dst()  # We were not in DST originally, so offset was 0
             })
             return response
     return None
