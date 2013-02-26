@@ -6,6 +6,9 @@ import pytz
 from django.conf import settings
 
 
+MAX_TZ_SEARCH_DAYS = getattr(settings, 'MAX_TZ_SEARCH_DAYS', 365)
+
+
 def get_tzdata(lat, lng):
     tzdata = None
     try:
@@ -32,26 +35,32 @@ def get_tzdata(lat, lng):
 
 
 def calculate_dst_dates(tz, localtime=datetime.utcnow()):
-    offset = 0
-    offset_amt = None
-    previousdt = None
     utc = timezone('UTC')
+    dt = tz.localize(localtime.replace(tzinfo=utc))
 
-    for dt in tz._utc_transition_times:
-        if dt.year < 2011:
-            offset = offset + 1
-            continue
-        if dt > localtime:
-            in_dst = False
-            if tz._transition_info[offset - 1][1] > timedelta(microseconds=1):
-                in_dst = True
-                offset_amt = tz._transition_info[offset - 1][1]
-            else:
-                offset_amt = tz._transition_info[offset][1]
-            return {'previous': tz.normalize(utc.localize(previousdt)), 'previous_abbrev': tz._transition_info[offset - 1][2],
-                    'next': tz.normalize(utc.localize(dt)), 'next_abbrev': tz._transition_info[offset][2],
-                    'in_dst': in_dst, 'offset': offset_amt, }
-        previousdt = dt
-        offset = offset + 1
+    response = {
+            'previous': dt,
+            'previous_abbrev': dt.tzname(),
+            'in_dst': True if dt.dst() else False,
+            'offset': dt.dst()
+        }
+    originally_dst = dt.dst()
 
+    for days in range(MAX_TZ_SEARCH_DAYS):
+        d = tz.normalize(
+            dt + timedelta(days = days)
+        )
+        if originally_dst and not d.dst():
+            response.update({
+                'next': d,
+                'next_abbrev': d.tzname()
+            })
+            return response
+        elif not originally_dst and d.dst():
+            response.update({
+                'next': d,
+                'next_abbrev': d.tzname(),
+                'offset': d.dst()  # We were not in DST originally, so offset was 0
+            })
+            return response
     return None
