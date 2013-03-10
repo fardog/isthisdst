@@ -82,17 +82,18 @@ def prepare_deploy():
     prepare_staticfiles()
 
 
-def deploy():
+def deploy(skip_test=False):
     """
     Deploy changes to your remote host. Makes assumptions that a deployment
     directory is already set up, and that your user has permissions to write
     to it.
     """
-    # verify that the directory exists on remote host, fail if not
-    with settings(warn_only=True):
-        result = run("test -d %s" % REMOTE_DIR)
-    if result.failed and not confirm("The remote deployment doesn't exist, try to clone it?"):
-        abort("Aborting at user request.")
+    if not skip_test:
+        # verify that the directory exists on remote host, fail if not
+        with settings(warn_only=True):
+            result = run("test -d %s" % REMOTE_DIR)
+        if result.failed and not confirm("The remote deployment doesn't exist, try to clone it?"):
+            abort("Aborting at user request.")
 
     # if we made it here with a failed test, we need to clone
     if result.failed:
@@ -137,6 +138,23 @@ def clone():
 
     with cd(REMOTE_DIR):
         run("chmod -R 777 db")
+
+
+def reclone():
+    """
+    Flush the existing deployment, and redeploy.
+    """
+    from os.path import dirname
+    from datetime import datetime
+    import re
+
+    p = re.compile('[/:()<>|?*\ ]|(\\\)')
+    target_dirname = p.sub('_', str(datetime.now()))
+
+    with cd(dirname(REMOTE_DIR)):
+        run("mv isthisdst %s" % target_dirname)
+
+    deploy(skip_test=True)
 
 
 def push_localsettings():
