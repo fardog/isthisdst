@@ -38,7 +38,7 @@ def index(request):
         tzdata = get_tzdata(latitude, longitude)
         tzname = tzdata['timezoneId']
         # calculated = calculate_dst_dates(timezone(tzdata['timezoneId']), datetime(2013, 01, 04, 00, 00))
-        calculated = calculate_dst_dates(timezone(tzdata['timezoneId']))
+        calculated = calculate_dst_dates(timezone(tzdata['timezoneId']), datetime.utcnow())
 
         if not calculated:
             observes = False

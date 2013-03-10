@@ -31,7 +31,7 @@ def get_tzdata(lat, lng):
     return tzdata
 
 
-def calculate_dst_dates(tz, localtime=datetime.utcnow()):
+def calculate_dst_dates(tz, localtime):
     offset = 0
     offset_amt = None
     previousdt = None
