@@ -1,3 +1,0 @@
-[submodule "app/geonames"]
-	path = app/geonames
-	url = git@github.com:fardog/python-geonames.git
