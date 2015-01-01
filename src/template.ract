@@ -1,0 +1,7 @@
+<div>
+  {{#something}}
+    {{this}}
+  {{else}}
+  <h1>Nothing</h1>
+  {{/something}}
+</div>
